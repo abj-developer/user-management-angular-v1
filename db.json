@@ -1,0 +1,60 @@
+{
+  "departments": [
+    {
+      "id": "1",
+      "name": "Engineering",
+      "location": "Noida"
+    },
+    {
+      "id": "2",
+      "name": "Human Resources",
+      "location": "Delhi"
+    },
+    {
+      "id": "3",
+      "name": "Finance",
+      "location": "Gurugram"
+    },
+    {
+      "id": "4",
+      "name": "Operations",
+      "location": "Noida"
+    },
+    {
+      "id": "a12f",
+      "name": "HR- TIRWA",
+      "location": "Kannauj"
+    },
+    {
+      "id": "f1aa",
+      "name": "Finance-TIRWA",
+      "location": "Kannauj"
+    }
+  ],
+  "users": [
+    {
+      "name": "Rahul Sharma",
+      "email": "rahul.sharma@example.com",
+      "departmentId": "1",
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "name": "Neha Verma",
+      "email": "neha.verma@example.com",
+      "departmentId": "1"
+    },
+    {
+      "id": "3",
+      "name": "Amit Singh",
+      "email": "amit.singh@example.com",
+      "departmentId": "2"
+    },
+    {
+      "id": "4",
+      "name": "Priya Gupta",
+      "email": "priya.gupta@example.com",
+      "departmentId": "3"
+    }
+  ]
+}

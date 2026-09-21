@@ -1,0 +1,35 @@
+{
+  "name": "user-management",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "mock-api": "json-server --watch db.json --port 3000",
+    "start:all": "concurrently \"npm run mock-api\" \"npm start\""
+  },
+  "dependencies": {
+    "@angular/common": "22.1.5",
+    "@angular/compiler": "22.1.5",
+    "@angular/core": "22.1.5",
+    "@angular/forms": "22.1.5",
+    "@angular/platform-browser": "22.1.5",
+    "@angular/platform-browser-dynamic": "^22.1.5",
+    "@angular/router": "22.1.5",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1",
+    "zone.js": "0.16.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "22.1.6",
+    "@angular/cli": "22.1.6",
+    "@angular/compiler-cli": "22.1.5",
+    "concurrently": "9.2.1",
+    "json-server": "1.0.0-beta.3",
+    "typescript": "6.0.2"
+  },
+  "engines": {
+    "node": ">=22.22.3"
+  }
+}

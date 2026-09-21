@@ -1,0 +1,443 @@
+<div class="page">
+
+  <header>
+    <div>
+
+      <p class="eyebrow">
+        APP-1 • Angular Revision
+      </p>
+
+      <h1>
+        User Management
+      </h1>
+
+      <p class="subtitle">
+        Users belong to a Department.
+        Role is intentionally not part of the User.
+      </p>
+
+    </div>
+  </header>
+
+
+  <!-- Messages -->
+
+  <div
+    *ngIf="message"
+    class="message">
+
+    {{ message }}
+
+  </div>
+
+
+  <div
+    *ngIf="errorMessage"
+    class="error">
+
+    {{ errorMessage }}
+
+  </div>
+
+
+
+  <!-- ============================= -->
+  <!-- Departments -->
+  <!-- ============================= -->
+
+  <section class="panel">
+
+    <h2>
+      Departments
+    </h2>
+
+
+    <div class="department-row">
+
+
+      <!-- Department Selection -->
+
+      <label>
+
+        Select Department
+
+        <select
+          [(ngModel)]="selectedDepartmentId"
+          (change)="onDepartmentChange()">
+
+          <option
+            [ngValue]="null"
+            disabled>
+
+            Select department
+
+          </option>
+
+
+          <option
+            *ngFor="let department of departments"
+            [ngValue]="department.departmentId">
+
+            {{ department.departmentName }}
+            —
+            {{ department.departmentCode }}
+
+          </option>
+
+        </select>
+
+      </label>
+
+
+
+      <!-- Add / Edit Department -->
+
+      <form
+        [formGroup]="departmentForm"
+        (ngSubmit)="addDepartment()"
+        class="inline-form">
+
+
+        <input
+          formControlName="departmentName"
+          placeholder="Department name" />
+
+
+        <input
+          formControlName="departmentAddress"
+          placeholder="Department address" />
+
+
+        <input
+          formControlName="departmentCode"
+          placeholder="Department code" />
+
+
+        <button type="submit">
+
+          {{
+            editingDepartmentId !== null
+              ? 'Update Department'
+              : 'Add Department'
+          }}
+
+        </button>
+
+
+        <button
+          *ngIf="editingDepartmentId !== null"
+          type="button"
+          class="secondary"
+          (click)="resetDepartmentForm()">
+
+          Cancel
+
+        </button>
+
+      </form>
+
+    </div>
+
+
+
+    <!-- Department List -->
+
+    <div
+      *ngFor="let department of departments"
+      class="user-card">
+
+
+      <div>
+
+        <h3>
+          {{ department.departmentName }}
+        </h3>
+
+        <p>
+          {{ department.departmentAddress }}
+        </p>
+
+        <p>
+          Code:
+          {{ department.departmentCode }}
+        </p>
+
+      </div>
+
+
+      <div class="actions">
+
+        <button
+          type="button"
+          class="secondary"
+          (click)="editDepartment(department)">
+
+          Edit
+
+        </button>
+
+
+        <button
+          type="button"
+          class="danger"
+          (click)="deleteDepartment(department)">
+
+          Delete
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- ============================= -->
+  <!-- Users -->
+  <!-- ============================= -->
+
+  <div class="grid">
+
+
+    <!-- User Form -->
+
+    <section class="panel">
+
+      <h2>
+
+        {{
+          editingUserId !== null
+            ? 'Edit User'
+            : 'Add User'
+        }}
+
+      </h2>
+
+
+      <form
+        [formGroup]="userForm"
+        (ngSubmit)="submitUser()">
+
+
+        <!-- First Name -->
+
+        <label>
+
+          First Name
+
+          <input
+            formControlName="firstName"
+            placeholder="Rahul" />
+
+        </label>
+
+
+        <small
+          *ngIf="
+            userForm.get('firstName')?.touched &&
+            userForm.get('firstName')?.invalid
+          ">
+
+          Enter at least 2 characters.
+
+        </small>
+
+
+
+        <!-- Last Name -->
+
+        <label>
+
+          Last Name
+
+          <input
+            formControlName="lastName"
+            placeholder="Sharma" />
+
+        </label>
+
+
+        <small
+          *ngIf="
+            userForm.get('lastName')?.touched &&
+            userForm.get('lastName')?.invalid
+          ">
+
+          Enter at least 2 characters.
+
+        </small>
+
+
+
+        <!-- Email -->
+
+        <label>
+
+          Email
+
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="rahul@example.com" />
+
+        </label>
+
+
+        <small
+          *ngIf="
+            userForm.get('email')?.touched &&
+            userForm.get('email')?.invalid
+          ">
+
+          Enter a valid email.
+
+        </small>
+
+
+
+        <!-- Department -->
+
+        <label>
+
+          Department
+
+          <select
+            formControlName="departmentId">
+
+            <option
+              [ngValue]="null"
+              disabled>
+
+              Select department
+
+            </option>
+
+
+            <option
+              *ngFor="let department of departments"
+              [ngValue]="department.departmentId">
+
+              {{ department.departmentName }}
+
+            </option>
+
+          </select>
+
+        </label>
+
+
+
+        <!-- Actions -->
+
+        <div class="actions">
+
+          <button type="submit">
+
+            {{
+              editingUserId !== null
+                ? 'Update User'
+                : 'Add User'
+            }}
+
+          </button>
+
+
+          <button
+            *ngIf="editingUserId !== null"
+            type="button"
+            class="secondary"
+            (click)="resetUserForm()">
+
+            Cancel
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+
+
+    <!-- Users List -->
+
+    <section class="panel">
+
+      <h2>
+        Users
+      </h2>
+
+      <p class="selected">
+
+        Department:
+
+        <strong>
+          {{ departmentName(selectedDepartmentId) }}
+        </strong>
+
+      </p>
+
+
+
+      <div
+        *ngIf="users.length === 0"
+        class="empty">
+
+        No users in this department.
+
+      </div>
+
+
+
+      <div
+        *ngFor="let user of users"
+        class="user-card">
+
+
+        <div>
+
+          <h3>
+            {{ user.name }}
+          </h3>
+
+          <p>
+            {{ user.email }}
+          </p>
+
+        </div>
+
+
+        <div class="actions">
+
+          <button
+            type="button"
+            class="secondary"
+            (click)="editUser(user)">
+
+            Edit
+
+          </button>
+
+
+          <button
+            type="button"
+            class="danger"
+            (click)="deleteUser(user)">
+
+            Delete
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>
+
