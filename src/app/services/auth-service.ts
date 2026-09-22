@@ -8,7 +8,7 @@ import { LoginRequest, LoginResponse } from '../models/auth.model';
 })
 export class AuthService {
 
-  private readonly baseUrl = 'https://abjms.duckdns.org/auth';
+  private readonly baseUrl = 'https://abjms.duckdns.org/api/auth';
 
   constructor(private http: HttpClient) {}
 

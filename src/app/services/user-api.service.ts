@@ -14,7 +14,7 @@ import {
 })
 export class UserApiService {
 
-  private readonly baseUrl = 'https://abjms.duckdns.org';
+  private readonly baseUrl = 'https://abjms.duckdns.org/api';
 
   constructor(private http: HttpClient) {}
 
