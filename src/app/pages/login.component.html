@@ -1,20 +1,38 @@
-<h2>Login</h2>
+<main class="login-page">
+  <section class="login-card">
+    <div class="login-header">
+      <p class="eyebrow">User Management</p>
+      <h1>Welcome back</h1>
+      <p class="subtitle">Sign in to manage your users and departments.</p>
+    </div>
 
-<input
-  [(ngModel)]="username"
-  placeholder="Username"
-/>
+    <form (ngSubmit)="login()">
+      <label for="username">Username</label>
+      <input
+        id="username"
+        name="username"
+        [(ngModel)]="username"
+        placeholder="Enter your username"
+        autocomplete="username"
+        required
+      />
 
-<input
-  type="password"
-  [(ngModel)]="password"
-  placeholder="Password"
-/>
+      <label for="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        required
+      />
 
-<button type="button" (click)="login()">
-  Login
-</button>
+      <p class="error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
 
-<p *ngIf="errorMessage">
-  {{ errorMessage }}
-</p>
+      <button type="submit">Sign in</button>
+    </form>
+  </section>
+</main>

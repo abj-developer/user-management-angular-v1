@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NgZone } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   FormBuilder,
   FormGroup,
@@ -14,6 +15,7 @@ import {
 } from '../models/user.models';
 
 import { UserApiService } from '../services/user-api.service';
+import { AuthService } from '../services/auth-service';
 
 @Component({
   selector: 'app-user-management',
@@ -40,6 +42,8 @@ export class UserManagementComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private api: UserApiService,
+    private authService: AuthService,
+    private router: Router,
     private cdr: ChangeDetectorRef,
     private zone: NgZone
   ) {
@@ -103,6 +107,11 @@ export class UserManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDepartments();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 
 
@@ -483,4 +492,3 @@ export class UserManagementComponent implements OnInit {
     )?.departmentName || 'Unknown';
   }
 }
-

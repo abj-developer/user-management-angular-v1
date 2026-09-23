@@ -12,6 +12,15 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('accessToken');
+  }
+
+  logout(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  }
+
   login(username: string, password: string): Observable<LoginResponse> {
 
     const request: LoginRequest = {
