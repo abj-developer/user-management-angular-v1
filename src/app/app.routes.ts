@@ -4,16 +4,16 @@ import { LoginComponent } from './pages/login.component';
 
 export const routes: Routes = [
   {
-    path: '/app',
-    redirectTo: '/app/login',
+    path: '',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
-    path: '/app/login',
+    path: 'login',
     component: LoginComponent
   },
   {
-    path: '/app/users',
+    path: 'users',
     component: UserManagementComponent
   }
 ]; 
