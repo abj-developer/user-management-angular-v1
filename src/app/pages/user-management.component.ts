@@ -6,6 +6,7 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
+import { Observable, finalize } from 'rxjs';
 
 import {
   Department,
@@ -35,6 +36,12 @@ export class UserManagementComponent implements OnInit {
 
   message = '';
   errorMessage = '';
+  toastMessage = '';
+  toastType: 'success' | 'error' = 'success';
+  dialogMessage = '';
+  private pendingDialogAction: (() => void) | null = null;
+  private loadingRequests = 0;
+  private toastTimerId?: number;
 
   userForm: FormGroup;
   departmentForm: FormGroup;
@@ -110,8 +117,52 @@ export class UserManagementComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login'], { replaceUrl: true });
+    this.openDialog('Are you sure you want to logout?', () => {
+      this.authService.logout();
+      this.router.navigate(['/login'], { replaceUrl: true });
+    });
+  }
+
+  confirmDialog(): void {
+    const action = this.pendingDialogAction;
+    this.closeDialog();
+
+    action?.();
+  }
+
+  closeDialog(): void {
+    this.dialogMessage = '';
+    this.pendingDialogAction = null;
+  }
+
+  private openDialog(message: string, action: () => void): void {
+    this.dialogMessage = message;
+    this.pendingDialogAction = action;
+  }
+
+  get isLoading(): boolean {
+    return this.loadingRequests > 0;
+  }
+
+  private track<T>(request: Observable<T>): Observable<T> {
+    this.loadingRequests++;
+
+    return request.pipe(
+      finalize(() => this.loadingRequests--)
+    );
+  }
+
+  private showToast(message: string, type: 'success' | 'error'): void {
+    if (this.toastTimerId) {
+      window.clearTimeout(this.toastTimerId);
+    }
+
+    this.toastMessage = message;
+    this.toastType = type;
+
+    this.toastTimerId = window.setTimeout(() => {
+      this.toastMessage = '';
+    }, 3500);
   }
 
 
@@ -121,7 +172,7 @@ export class UserManagementComponent implements OnInit {
 
   loadDepartments(): void {
 
-    this.api.getDepartments().subscribe({
+    this.track(this.api.getDepartments()).subscribe({
 
       next: departments => {
 
@@ -145,8 +196,7 @@ export class UserManagementComponent implements OnInit {
       },
 
       error: () => {
-        this.errorMessage =
-          'Could not load departments.';
+        this.showToast('Could not load departments.', 'error');
       }
     });
   }
@@ -185,14 +235,16 @@ export class UserManagementComponent implements OnInit {
         : this.api.addDepartment(request);
 
 
-    operation.subscribe({
+    this.track(operation).subscribe({
 
       next: department => {
 
-        this.message =
+        this.showToast(
           this.editingDepartmentId !== null
             ? 'Department updated.'
-            : 'Department added.';
+            : 'Department added.',
+          'success'
+        );
 
 
         if (this.editingDepartmentId !== null) {
@@ -232,8 +284,7 @@ export class UserManagementComponent implements OnInit {
 
       error: () => {
 
-        this.errorMessage =
-          'Could not save department.';
+        this.showToast('Could not save department.', 'error');
       }
     });
   }
@@ -260,37 +311,27 @@ export class UserManagementComponent implements OnInit {
 
   deleteDepartment(department: Department): void {
 
-    if (
-      !confirm(
-        `Delete ${department.departmentName}?`
-      )
-    ) {
-      return;
-    }
+    this.openDialog(
+      `Delete ${department.departmentName}?`,
+      () => this.deleteDepartmentConfirmed(department.departmentId)
+    );
+  }
 
-
-    this.api
-      .deleteDepartment(
-        department.departmentId
-      )
-      .subscribe({
+  private deleteDepartmentConfirmed(departmentId: number): void {
+    this.track(this.api.deleteDepartment(departmentId)).subscribe({
 
         next: () => {
 
-          this.message =
-            'Department deleted.';
+          this.showToast('Department deleted.', 'success');
 
           this.departments =
             this.departments.filter(
-              d =>
-                d.departmentId !==
-                department.departmentId
+              d => d.departmentId !== departmentId
             );
 
 
           if (
-            this.selectedDepartmentId ===
-            department.departmentId
+            this.selectedDepartmentId === departmentId
           ) {
 
             this.selectedDepartmentId =
@@ -302,7 +343,7 @@ export class UserManagementComponent implements OnInit {
             this.userForm.patchValue({
               departmentId:
                 this.selectedDepartmentId
-            });
+    });
 
             this.loadUsers();
           }
@@ -310,8 +351,7 @@ export class UserManagementComponent implements OnInit {
 
         error: () => {
 
-          this.errorMessage =
-            'Could not delete department.';
+          this.showToast('Could not delete department.', 'error');
         }
       });
   }
@@ -339,10 +379,10 @@ export class UserManagementComponent implements OnInit {
     }
 
 
-    this.api
+    this.track(this.api
       .getUsersByDepartment(
         this.selectedDepartmentId
-      )
+      ))
       .subscribe({
         next: users => {
           this.users = users;
@@ -351,8 +391,7 @@ export class UserManagementComponent implements OnInit {
 
         error: () => {
 
-          this.errorMessage =
-            'Could not load users.';
+          this.showToast('Could not load users.', 'error');
         }
       });
   }
@@ -383,14 +422,14 @@ export class UserManagementComponent implements OnInit {
         : this.api.addUser(request);
 
 
-    operation.subscribe({
+    this.track(operation).subscribe({
 
       next: () => {
 
-        this.message =
-          this.editingUserId !== null
-            ? 'User updated.'
-            : 'User added.';
+        this.showToast(
+          this.editingUserId !== null ? 'User updated.' : 'User added.',
+          'success'
+        );
 
 
         this.resetUserForm();
@@ -400,8 +439,7 @@ export class UserManagementComponent implements OnInit {
 
       error: () => {
 
-        this.errorMessage =
-          'Could not save user.';
+        this.showToast('Could not save user.', 'error');
       }
     });
   }
@@ -440,33 +478,27 @@ export class UserManagementComponent implements OnInit {
 
   deleteUser(user: User): void {
 
-    if (
-      !confirm(
-        `Delete ${user.name}?`
-      )
-    ) {
-      return;
-    }
+    this.openDialog(
+      `Delete ${user.name}?`,
+      () => this.deleteUserConfirmed(user.id)
+    );
+  }
 
-
-    this.api
-      .deleteUser(user.id)
-      .subscribe({
+  private deleteUserConfirmed(userId: number): void {
+    this.track(this.api.deleteUser(userId)).subscribe({
 
         next: () => {
 
-          this.message =
-            'User deleted.';
+          this.showToast('User deleted.', 'success');
 
           this.loadUsers();
         },
 
         error: () => {
 
-          this.errorMessage =
-            'Could not delete user.';
+          this.showToast('Could not delete user.', 'error');
         }
-      });
+    });
   }
 
 

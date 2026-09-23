@@ -68,6 +68,88 @@ h1 {
   color: #b91c1c;
 }
 
+.toast,
+.loading-indicator {
+  position: fixed;
+  right: 24px;
+  z-index: 10;
+  padding: 12px 16px;
+  border-radius: 9px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+}
+
+.toast {
+  top: 24px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.toast-error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.loading-indicator {
+  bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.dialog-box {
+  width: min(100%, 380px);
+  padding: 24px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.2);
+}
+
+.dialog-box p {
+  margin: 0;
+  color: #0f172a;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 
 /* =========================
    Panels
@@ -170,6 +252,12 @@ button {
 
 button:hover {
   opacity: 0.92;
+}
+
+button:disabled,
+select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 button.secondary {
@@ -287,9 +375,17 @@ form .actions {
    ========================= */
 
 small {
-  margin-top: -10px;
+  display: block;
+  margin-top: 6px;
   color: #dc2626;
   font-size: 13px;
+  line-height: 1.4;
+}
+
+.inline-form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 
@@ -348,6 +444,17 @@ small {
 
   .panel {
     padding: 20px;
+  }
+
+  .toast,
+  .loading-indicator {
+    right: 16px;
+    left: 16px;
+  }
+
+  .toast {
+    right: auto;
+    left: 50%;
   }
 
   header {

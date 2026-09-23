@@ -24,23 +24,55 @@
   </header>
 
 
-  <!-- Messages -->
-
   <div
-    *ngIf="message"
-    class="message">
+    *ngIf="toastMessage"
+    class="toast"
+    [class.toast-error]="toastType === 'error'"
+    role="status">
 
-    {{ message }}
+    {{ toastMessage }}
 
   </div>
 
+  <div
+    *ngIf="isLoading"
+    class="loading-indicator"
+    role="status">
+
+    <span class="spinner"></span>
+    Working...
+
+  </div>
 
   <div
-    *ngIf="errorMessage"
-    class="error">
+    *ngIf="dialogMessage"
+    class="dialog-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dialog-message">
 
-    {{ errorMessage }}
+    <div class="dialog-box">
+      <p id="dialog-message">{{ dialogMessage }}</p>
 
+      <div class="dialog-actions">
+        <button
+          type="button"
+          class="secondary"
+          (click)="closeDialog()">
+
+          No
+
+        </button>
+
+        <button
+          type="button"
+          (click)="confirmDialog()">
+
+          Yes
+
+        </button>
+      </div>
+    </div>
   </div>
 
 
@@ -67,7 +99,8 @@
 
         <select
           [(ngModel)]="selectedDepartmentId"
-          (change)="onDepartmentChange()">
+          (change)="onDepartmentChange()"
+          [disabled]="isLoading">
 
           <option
             [ngValue]="null"
@@ -102,22 +135,50 @@
         class="inline-form">
 
 
-        <input
-          formControlName="departmentName"
-          placeholder="Department name" />
+        <div>
+          <input
+            formControlName="departmentName"
+            placeholder="Department name" />
+
+          <small
+            *ngIf="
+              departmentForm.get('departmentName')?.touched &&
+              departmentForm.get('departmentName')?.invalid
+            ">
+            Enter at least 2 characters.
+          </small>
+        </div>
+
+        <div>
+          <input
+            formControlName="departmentAddress"
+            placeholder="Department address" />
+
+          <small
+            *ngIf="
+              departmentForm.get('departmentAddress')?.touched &&
+              departmentForm.get('departmentAddress')?.invalid
+            ">
+            Enter department address.
+          </small>
+        </div>
+
+        <div>
+          <input
+            formControlName="departmentCode"
+            placeholder="Department code" />
+
+          <small
+            *ngIf="
+              departmentForm.get('departmentCode')?.touched &&
+              departmentForm.get('departmentCode')?.invalid
+            ">
+            Enter department code.
+          </small>
+        </div>
 
 
-        <input
-          formControlName="departmentAddress"
-          placeholder="Department address" />
-
-
-        <input
-          formControlName="departmentCode"
-          placeholder="Department code" />
-
-
-        <button type="submit">
+        <button type="submit" [disabled]="isLoading">
 
           {{
             editingDepartmentId !== null
@@ -184,6 +245,7 @@
         <button
           type="button"
           class="danger"
+          [disabled]="isLoading"
           (click)="deleteDepartment(department)">
 
           Delete
@@ -337,7 +399,7 @@
 
         <div class="actions">
 
-          <button type="submit">
+          <button type="submit" [disabled]="isLoading">
 
             {{
               editingUserId !== null
@@ -352,6 +414,7 @@
             *ngIf="editingUserId !== null"
             type="button"
             class="secondary"
+            [disabled]="isLoading"
             (click)="resetUserForm()">
 
             Cancel
@@ -419,6 +482,7 @@
           <button
             type="button"
             class="secondary"
+            [disabled]="isLoading"
             (click)="editUser(user)">
 
             Edit
@@ -429,6 +493,7 @@
           <button
             type="button"
             class="danger"
+            [disabled]="isLoading"
             (click)="deleteUser(user)">
 
             Delete
