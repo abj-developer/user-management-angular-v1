@@ -25,7 +25,6 @@ This project is the frontend layer for the backend microservices POC:
 - Loading indicators and toast notifications
 - Confirmation dialogs for destructive actions
 - Responsive UI for desktop and small screens
-- Mock backend using JSON Server
 
 ## Tech Stack
 
