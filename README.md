@@ -1,42 +1,47 @@
-# APP-1 — User Management (NgModule Revision)
+# User Management Angular App
 
-This version intentionally uses the classic Angular NgModule architecture so that old Angular concepts can be revised before moving to modern Angular 22 standalone APIs.
+A modern Angular 22 application for managing users and departments with JWT-based authentication, protected routes, and mock backend support.
 
-## Concepts in this app
-- AppModule / NgModule
-- Components and templates
-- Interpolation
-- Property binding
-- Event binding
-- Two-way binding with ngModel
-- *ngIf / *ngFor
-- Services
-- Dependency Injection
-- HttpClient
-- Observables / subscribe
-- Reactive Forms
-- CRUD
-- User -> Department relationship
+This frontend app connects to a distributed microservices-based backend for user management and authentication. It provides a secure interface for login, user CRUD operations, department management, and session handling.
+
+This project is the frontend layer for the backend microservices POC:
+
+- Backend Microservices POC:
+  https://github.com/abj-developer/user-management-system
+
+- Live Frontend Demo:
+  https://user-management-angular-v1.vercel.app/
+
+- Live Backend API Demo:
+  https://abjms.duckdns.org/swagger-ui/index.html
+
+## Features
+
+- JWT login flow with localStorage token storage
+- Route guard to protect authenticated pages
+- Department management (add, edit, delete)
+- User management (add, edit, delete)
+- Role-protected access pattern through protected routes
+- Loading indicators and toast notifications
+- Confirmation dialogs for destructive actions
+- Responsive UI for desktop and small screens
+
+## Tech Stack
+
+- Angular 22
+- TypeScript
+- RxJS
+- JSON Server
+- HTML / CSS / Angular Forms
+
+## Prerequisites
+- Node.js 22+
+- npm
+  
+## Installation
+npm install
 
 ## Run
-Terminal 1:
-```bash
-npm install
-npm run mock-api
-```
-
-Terminal 2:
-```bash
 npm start
-```
 
-App: http://localhost:4200
-Mock API: http://localhost:3000
 
-## API collections
-- GET /departments
-- POST /departments
-- GET /users?departmentId=1
-- POST /users
-- PUT /users/:id
-- DELETE /users/:id
