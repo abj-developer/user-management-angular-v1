@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ) {
     const isLoginRequest = req.url.includes('/auth/auth/login');
-    const request = this.addToken(req);
+    const request = isLoginRequest ? req : this.addToken(req);
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
